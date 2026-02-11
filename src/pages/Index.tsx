@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
-import { Position } from "@/types/portfolio";
-import { PositionsTable } from "@/components/PositionsTable";
+import { Position, PortfolioSummary as PortfolioSummaryType } from "@/types/portfolio";
 import { useToast } from "@/hooks/use-toast";
+import PortfolioHeader from "@/components/PortfolioHeader";
+import PositionsSection from "@/components/PositionsSection";
+import PortfolioSummaryComponent from "@/components/PortfolioSummary";
 
 const API_BASE_URL = "http://localhost:4000/api";
 
 const Index = () => {
   const [positions, setPositions] = useState<Position[]>([]);
+  const [summary, setSummary] = useState<PortfolioSummaryType | null>(null);
   const [isLoadingPositions, setIsLoadingPositions] = useState(true);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchPositions();
+    fetchSummary();
   }, []);
 
   const fetchPositions = async () => {
@@ -34,31 +39,34 @@ const Index = () => {
     }
   };
 
+  const fetchSummary = async () => {
+    try {
+      setIsLoadingSummary(true);
+      const response = await fetch(`${API_BASE_URL}/portfolio/summary`);
+      if (!response.ok) throw new Error("Failed to fetch portfolio summary");
+      const data = await response.json();
+      setSummary(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          "Failed to load portfolio summary. Make sure the backend is running.",
+        variant: "destructive",
+      });
+      console.error("Error fetching portfolio summary:", error);
+    } finally {
+      setIsLoadingSummary(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Carbon Portfolio</h1>
-          <p className="text-muted-foreground">
-            Manage and track your carbon credit positions
-          </p>
-        </div>
+        <PortfolioHeader />
 
         <div className="space-y-6">
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Positions</h2>
-            {isLoadingPositions ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Loading positions...
-              </div>
-            ) : positions.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No positions found
-              </div>
-            ) : (
-              <PositionsTable positions={positions} />
-            )}
-          </div>
+          <PortfolioSummaryComponent summary={summary} isLoading={isLoadingSummary} />
+          <PositionsSection positions={positions} isLoadingPositions={isLoadingPositions} />
         </div>
       </div>
     </div>
