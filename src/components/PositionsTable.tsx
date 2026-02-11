@@ -2,13 +2,11 @@ import { Position } from '@/types/portfolio';
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { formatCurrency, formatNumber } from '@/lib/utils';
+import { PositionRow } from './PositionRow';
 
 interface PositionsTableProps {
   positions: Position[];
@@ -30,20 +28,7 @@ export function PositionsTable({ positions }: PositionsTableProps) {
         </TableHeader>
         <TableBody>
           {positions.map((position) => (
-            <TableRow key={position.id}>
-              <TableCell className="font-medium">{position.projectName}</TableCell>
-              <TableCell className="text-right">{formatNumber(position.tonnes)}</TableCell>
-              <TableCell className="text-right">{formatCurrency(position.pricePerTonne)}</TableCell>
-              <TableCell className="text-right">
-                {formatCurrency(position.tonnes * position.pricePerTonne)}
-              </TableCell>
-              <TableCell className="text-center">
-                <Badge variant={position.status === 'available' ? 'default' : 'secondary'}>
-                  {position.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-center">{position.vintage}</TableCell>
-            </TableRow>
+            <PositionRow key={position.id} position={position} />
           ))}
         </TableBody>
       </Table>
