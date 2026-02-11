@@ -9,13 +9,6 @@ interface PortfolioSummaryProps {
   currentStatus?: string | null;
 }
 
-// Define the summary items to avoid repetition
-const SUMMARY_ITEMS = [
-  { label: "Total Tonnes", valueKey: "totalTonnes", formatter: formatNumber },
-  { label: "Total Value", valueKey: "totalValue", formatter: formatCurrency },
-  { label: "Avg Price/Tonne", valueKey: "averagePricePerTonne", formatter: formatCurrency },
-];
-
 // Sub-component: SummaryItem
 const SummaryItem = ({ label, value }: { label: string; value: string | number }) => (
   <div className="text-center">
@@ -69,6 +62,13 @@ const MessageDisplay = ({ message }: { message: string }) => (
 );
 
 const PortfolioSummaryComponent = ({ summary, isLoading = false, onStatusChange, currentStatus }: PortfolioSummaryProps) => {
+  // Define the summary items to avoid repetition
+  const SUMMARY_ITEMS = [
+    { label: "Total Tonnes", valueKey: "totalTonnes", formatter: formatNumber },
+    { label: "Total Value", valueKey: "totalValue", formatter: formatCurrency },
+    { label: "Avg Price/Tonne", valueKey: "averagePricePerTonne", formatter: formatCurrency },
+  ];
+
   // Determine content based on state
   let content;
 

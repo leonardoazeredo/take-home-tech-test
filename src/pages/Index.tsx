@@ -12,12 +12,18 @@ const Index = () => {
   const [summary, setSummary] = useState<PortfolioSummaryType | null>(null);
   const [isLoadingPositions, setIsLoadingPositions] = useState(true);
   const [isLoadingSummary, setIsLoadingSummary] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchPositions();
     fetchSummary();
   }, []);
+
+  useEffect(() => {
+    // Re-fetch summary when status filter changes
+    fetchSummary();
+  }, [statusFilter]);
 
   const fetchPositions = async () => {
     try {
@@ -42,7 +48,12 @@ const Index = () => {
   const fetchSummary = async () => {
     try {
       setIsLoadingSummary(true);
-      const response = await fetch(`${API_BASE_URL}/portfolio/summary`);
+      // Construct URL with status filter if present
+      const url = statusFilter
+        ? `${API_BASE_URL}/portfolio/summary?status=${statusFilter}`
+        : `${API_BASE_URL}/portfolio/summary`;
+
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch portfolio summary");
       const data = await response.json();
       setSummary(data);
@@ -59,13 +70,22 @@ const Index = () => {
     }
   };
 
+  const handleStatusChange = (status: string | null) => {
+    setStatusFilter(status);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <PortfolioHeader />
 
         <div className="space-y-6">
-          <PortfolioSummaryComponent summary={summary} isLoading={isLoadingSummary} />
+          <PortfolioSummaryComponent
+            summary={summary}
+            isLoading={isLoadingSummary}
+            onStatusChange={handleStatusChange}
+            currentStatus={statusFilter}
+          />
           <PositionsSection positions={positions} isLoadingPositions={isLoadingPositions} />
         </div>
       </div>
