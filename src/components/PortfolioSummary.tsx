@@ -5,6 +5,8 @@ import { formatCurrency, formatNumber } from "@/lib/utils";
 interface PortfolioSummaryProps {
   summary: PortfolioSummaryType | null;
   isLoading?: boolean;
+  onStatusChange?: (status: string | null) => void;
+  currentStatus?: string | null;
 }
 
 // Define the summary items to avoid repetition
@@ -39,11 +41,47 @@ const MessageDisplay = ({ message }: { message: string }) => (
   <div className="text-center py-4 text-muted-foreground">{message}</div>
 );
 
-const PortfolioSummaryComponent = ({ summary, isLoading = false }: PortfolioSummaryProps) => {
+const PortfolioSummaryComponent = ({ summary, isLoading = false, onStatusChange, currentStatus }: PortfolioSummaryProps) => {
   if (isLoading) {
     return (
       <SummaryCard title="Portfolio Summary">
-        <MessageDisplay message="Loading summary..." />
+        <div className="space-y-4">
+          {/* Status Filter Controls */}
+          <div className="flex space-x-4">
+            <button
+              onClick={() => onStatusChange?.(null)}
+              className={`px-4 py-2 rounded-md ${
+                currentStatus === null
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              All Statuses
+            </button>
+            <button
+              onClick={() => onStatusChange?.('available')}
+              className={`px-4 py-2 rounded-md ${
+                currentStatus === 'available'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              Available
+            </button>
+            <button
+              onClick={() => onStatusChange?.('retired')}
+              className={`px-4 py-2 rounded-md ${
+                currentStatus === 'retired'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              Retired
+            </button>
+          </div>
+
+          <MessageDisplay message="Loading summary..." />
+        </div>
       </SummaryCard>
     );
   }
@@ -51,21 +89,93 @@ const PortfolioSummaryComponent = ({ summary, isLoading = false }: PortfolioSumm
   if (!summary) {
     return (
       <SummaryCard title="Portfolio Summary">
-        <MessageDisplay message="No summary data available" />
+        <div className="space-y-4">
+          {/* Status Filter Controls */}
+          <div className="flex space-x-4">
+            <button
+              onClick={() => onStatusChange?.(null)}
+              className={`px-4 py-2 rounded-md ${
+                currentStatus === null
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              All Statuses
+            </button>
+            <button
+              onClick={() => onStatusChange?.('available')}
+              className={`px-4 py-2 rounded-md ${
+                currentStatus === 'available'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              Available
+            </button>
+            <button
+              onClick={() => onStatusChange?.('retired')}
+              className={`px-4 py-2 rounded-md ${
+                currentStatus === 'retired'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              Retired
+            </button>
+          </div>
+
+          <MessageDisplay message="No summary data available" />
+        </div>
       </SummaryCard>
     );
   }
 
   return (
     <SummaryCard title="Portfolio Summary">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {SUMMARY_ITEMS.map(({ label, valueKey, formatter }) => (
-          <SummaryItem 
-            key={label} 
-            label={label} 
-            value={formatter(summary[valueKey as keyof PortfolioSummaryType] as number)} 
-          />
-        ))}
+      <div className="space-y-4">
+        {/* Status Filter Controls */}
+        <div className="flex space-x-4">
+          <button
+            onClick={() => onStatusChange?.(null)}
+            className={`px-4 py-2 rounded-md ${
+              currentStatus === null
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+            }`}
+          >
+            All Statuses
+          </button>
+          <button
+            onClick={() => onStatusChange?.('available')}
+            className={`px-4 py-2 rounded-md ${
+              currentStatus === 'available'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+            }`}
+          >
+            Available
+          </button>
+          <button
+            onClick={() => onStatusChange?.('retired')}
+            className={`px-4 py-2 rounded-md ${
+              currentStatus === 'retired'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+            }`}
+          >
+            Retired
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {SUMMARY_ITEMS.map(({ label, valueKey, formatter }) => (
+            <SummaryItem
+              key={label}
+              label={label}
+              value={formatter(summary[valueKey as keyof PortfolioSummaryType] as number)}
+            />
+          ))}
+        </div>
       </div>
     </SummaryCard>
   );
