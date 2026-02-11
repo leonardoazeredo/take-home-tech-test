@@ -8,23 +8,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { formatCurrency, formatNumber } from '@/lib/utils';
 
 interface PositionsTableProps {
   positions: Position[];
 }
 
 export function PositionsTable({ positions }: PositionsTableProps) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(value);
-  };
-
-  const formatNumber = (value: number) => {
-    return new Intl.NumberFormat('en-US').format(value);
-  };
-
   return (
     <div className="rounded-lg border border-border bg-card">
       <Table>
