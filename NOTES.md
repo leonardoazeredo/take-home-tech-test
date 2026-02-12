@@ -16,3 +16,21 @@ The original implementation had an incorrect calculation for the averagePricePer
 - Moved filter controls to the PortfolioSummary component because the filters are semantically related to the summary data they affect, improving component cohesion.
 - Dynamically generated filter buttons from an array to make it easier to add new filter options in the future without duplicating button markup.
 - Consolidated the component structure to eliminate repetitive templates, reducing cognitive load and making the component easier to maintain.
+- Separated concerns by creating a custom hook (`usePortfolioSummary`) for data fetching and state management because mixing these concerns in the UI component made it harder to test and maintain.
+- Created a service layer (`portfolioApi.ts`) to abstract API calls because tight coupling between components and API endpoints made the code brittle and difficult to modify or test.
+- Moved API logic out of the Index page to improve separation of concerns because the page was doing too many things (data fetching, state management, UI orchestration) which violated the single responsibility principle.
+- Organized components by domain (portfolio components in `src/components/portfolio/`) to improve maintainability and make the codebase easier to navigate.
+- Created dedicated hooks for different data concerns (`usePortfolioSummary` and `usePositions`) to separate data fetching responsibilities and make components more focused.
+
+## Thoughts and Suggestions for Future Improvements
+
+While completing this take-home test, I identified several areas that I would consider for future enhancement if this were a real-world application, though they fall outside the scope of this exercise:
+
+- **Caching Strategy**: I would consider implementing caching for the portfolio summary API to reduce the impact of the slow API response while still preserving the backend functionality. This could improve user experience without removing the intentional delay.
+- **Enhanced Filtering**: The current implementation supports filtering by status only. I would like to expand this to include filtering by vintage year, project name, or price range in future iterations.
+- **Loading State Enhancements**: I considered adding skeleton screens or more detailed loading indicators to improve perceived performance during the 2-second API delay.
+- **Error Handling**: The current error handling is basic. I would implement more sophisticated error recovery mechanisms in a production environment, such as retry logic or fallback displays.
+- **Performance Optimization**: I would consider implementing pagination or virtual scrolling if the number of positions grows significantly large.
+- **Testing Coverage**: I recognize that the current implementation would benefit from comprehensive unit tests for the filtering logic and integration tests for the frontend components.
+- **Accessibility**: I noted that the filter controls could be enhanced with better accessibility attributes (ARIA labels, keyboard navigation) to improve usability for all users.
+- **Configurability**: I noted that the API_BASE_URL lives in code files, that kind of information should be moved to a .env file.
