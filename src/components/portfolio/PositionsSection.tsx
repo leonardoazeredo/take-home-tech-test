@@ -1,5 +1,5 @@
 import { Position } from "@/types/portfolio";
-import { PositionsTable } from "@/components/PositionsTable";
+import { PositionsTable } from "./PositionsTable";
 
 interface PositionsSectionProps {
   positions: Position[];
